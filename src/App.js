@@ -1,25 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const [movies, setMovies] = useState([])
+  const [pesquisa, setPesquisa] = useState('');
+
+  const handleClick = () => {
+    console.log('click')
+    fetch(`http://www.omdbapi.com/?s=${pesquisa}&apikey=b13e933d`)
+      .then(response => response.json())
+      .then(json => setMovies(json.Search))
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <center>
+        <h1>FILMES</h1>
+        <input onChange={event => setPesquisa(event.target.value)}/>
+        <button onClick={() => handleClick()}>Pesquisar</button>
+        <span>
+          {movies && movies.map(movie => {
+            return(
+              <div key={movie.imdbID}>
+                <h2>{movie.Title} - {movie.Year}</h2>
+                <img border="0" src={movie.Poster}></img>
+                {/*<br/>
+                {movie.favorite && <span>Favorito</span>}
+                <button onClick={() => handleClick(movie.imdbID)}>Favoritar</button>*/}
+              </div>
+            );
+          })}
+        </span>
+     </center>
+    </>
   );
 }
 
